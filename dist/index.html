@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#153f37">
+  <meta name="description" content="中英双语 JavaScript 学习与练习。理解概念、运行代码、主动回忆，一次一个知识点。">
+  <title>JS Practice · 一点一点，真正理解</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23153f37'/%3E%3Ctext x='12' y='44' font-size='32' fill='%23e8ee87' font-family='sans-serif' font-weight='bold'%3EJS%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到学习内容</a>
+  <aside class="sidebar" aria-label="课程导航">
+    <a class="brand" href="#closures"><span class="brand-icon">js<span>↗</span></span><span>JS Practice<small>你的 JavaScript 练习室</small></span></a>
+    <a class="button primary" href="./training.html" style="margin-bottom:20px">21 天面试训练 · 进入 →</a>
+    <div class="course-label">LEARNING PATH <span>ES6+</span></div>
+    <label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索知识点 / Search" aria-label="搜索知识点"></label>
+    <div class="filters" aria-label="课程筛选">
+      <button class="filter active" data-filter="all" aria-pressed="true">全部</button>
+      <button class="filter" data-filter="new" aria-pressed="false">待练习</button>
+      <button class="filter" data-filter="due" aria-pressed="false">待复习 <span id="due-count">0</span></button>
+    </div>
+    <nav id="lessons" aria-label="知识点列表"></nav>
+    <div class="sidebar-foot"><span class="small-dot"></span> 不赶进度，先理解一个问题。<button id="about" class="text-button">学习方式与数据说明 ↗</button></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><button id="menu" aria-expanded="false" aria-label="展开课程目录">☰</button><div class="breadcrumb">学习空间 <span>/</span> <strong>JavaScript</strong></div><div class="top-actions"><span class="save-status" id="save-status" role="status">草稿自动保存在此浏览器</span><button id="backup" class="button small">备份与恢复</button></div></header>
+    <main id="main" tabindex="-1">
+      <section class="welcome"><div><div class="eyebrow">LESS IS MORE. PRACTICE IS BETTER.</div><h1>一点一点，真正理解<span>。</span></h1><p>从“我好像懂了”，到“我能解释，也能验证”。</p></div><div class="progress-summary" id="progress-summary" aria-label="学习进度"></div></section>
+      <section class="lesson-shell" aria-label="当前知识点">
+        <header class="lesson-header"><div><div class="lesson-meta" id="lesson-meta"></div><h2 id="lesson-title"></h2><p id="lesson-intro"></p></div><button class="button icon-button" id="next-lesson" aria-label="下一个知识点">下一个 <span>→</span></button></header>
+        <div class="tabs" role="tablist" aria-label="学习模式"><button id="tab-learn" role="tab" aria-selected="true" aria-controls="panel-learn" data-tab="learn">01 <span>理解概念</span></button><button id="tab-practice" role="tab" aria-selected="false" aria-controls="panel-practice" tabindex="-1" data-tab="practice">02 <span>动手练习</span></button><button id="tab-recall" role="tab" aria-selected="false" aria-controls="panel-recall" tabindex="-1" data-tab="recall">03 <span>回忆与面试</span></button></div>
+        <div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn"></div>
+        <div id="panel-practice" role="tabpanel" aria-labelledby="tab-practice" hidden></div>
+        <div id="panel-recall" role="tabpanel" aria-labelledby="tab-recall" hidden></div>
+      </section>
+      <section class="connections" aria-label="知识关联"><div><span class="eyebrow">CONNECT THE DOTS</span><h3>把知识连起来</h3><p>理解它从哪里来，还能用在哪里。</p></div><div id="connections"></div></section>
+      <footer class="page-footer"><span>21 个主题 · 中英双语 · 按自己的节奏</span><span>理解 → 练习 → 复述 → 验证</span></footer>
+    </main>
+  </div>
+  <div id="runner-host" hidden></div>
+  <div id="toast" role="status" hidden></div>
+  <dialog id="data-dialog" aria-labelledby="data-title"><div class="dialog-top"><h2 id="data-title">你的学习记录</h2><button class="close-dialog icon-button" aria-label="关闭">×</button></div><p>草稿、笔记、复习日期和进度保存在<strong>当前设备的这个浏览器</strong>。不会自动跨设备同步；清除网站数据会丢失记录。</p><div class="info-box">换浏览器、设备或网站地址之前，先导出备份。导入覆盖备份里包含的知识点；若包含面试训练记录，也会覆盖其任务、回答和复习日期。其余记录保留。</div><div class="dialog-actions"><button id="export" class="button primary">导出 JSON 备份 ↓</button><label class="button" for="import-file">选择备份文件 ↑</label><input type="file" id="import-file" accept=".json,application/json" hidden></div><details class="hint" id="text-backup"><summary>也可以复制或粘贴备份文本</summary><p><label for="backup-text">当前记录 · 全选复制后另存为文本</label></p><textarea id="backup-text" class="notes" readonly></textarea><p><label for="restore-text">粘贴需要恢复的 JSON 备份</label></p><textarea id="restore-text" class="notes" maxlength="1500000" placeholder="粘贴备份文本"></textarea><button id="preview-import" class="button small">检查备份文本</button></details><p id="import-message" role="status"></p><button id="confirm-import" class="button primary" hidden>确认导入并覆盖对应记录</button></dialog>
+  <dialog id="about-dialog" aria-labelledby="about-title"><div class="dialog-top"><h2 id="about-title">每次只学一个问题</h2><button class="close-dialog icon-button" aria-label="关闭">×</button></div><ol class="steps"><li><strong>理解概念</strong><p>先读中英解释和生活例子，预测示例输出。</p></li><li><strong>动手验证</strong><p>改一点、跑一次。可看提示或参考解法；参考后通过会单独标记。</p></li><li><strong>主动回忆</strong><p>先不看答案，用自己的话复述。记录薄弱点，再安排复习。</p></li><li><strong>工程判断</strong><p>解释“如何知道正确、出错查哪里”。课程检查通过不等于已经独立交付生产项目。</p></li></ol><p>内容是为基础刷新设计的常见主题选集，不是任何公司的内部题库。ES6+ 包含 ES6 及之后常用特性，也补上必要的旧基础。</p><p>练习环境支持普通 JavaScript 和 await，不支持 DOM、联网、npm 或顶层 import/export。自动反馈来自固定测试，不是 AI 实时评阅。</p><button class="button close-dialog">开始学习 →</button></dialog>
+</body>
+</html>
